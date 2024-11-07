@@ -1,5 +1,11 @@
 "use client";
+
+import { useDispatch } from "react-redux";
+import { openLoginModal } from "@/redux/modalSlice";
+
 export default function Navbar() {
+  const dispatch = useDispatch();
+
   return (
     <nav className="nav">
       <div className="nav__wrapper">
@@ -7,7 +13,12 @@ export default function Navbar() {
           <img className="nav__img" src="/assets/logo.png" alt="logo" />
         </figure>
         <ul className="nav__list--wrapper">
-          <li className="nav__list nav__list--login">Login</li>
+          <li
+            className="nav__list nav__list--login"
+            onClick={() => dispatch(openLoginModal())}
+          >
+            Login
+          </li>
           <li className="nav__list nav__list--mobile">About</li>
           <li className="nav__list nav__list--mobile">Contact</li>
           <li className="nav__list nav__list--mobile">Help</li>
