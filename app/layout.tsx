@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import Providers from "./providers";
 import LoginModal from "./components/modals/LoginModal";
 import SignupModal from "./components/modals/SignupModal";
+import ForgetPasswordModal from "./components/modals/ForgetPasswordModa";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,6 +38,7 @@ export default function RootLayout({
           {children}
           <LoginModal />
           <SignupModal />
+          <ForgetPasswordModal />
         </Providers>
       </body>
     </html>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
   closeLoginModal,
+  openPasswordModal,
   openSignupModal,
 } from "@/redux/modalSlice";
 import { useState } from "react";
@@ -38,13 +39,12 @@ export default function LoginModal() {
       await signInWithEmailAndPassword(auth, email, password);
       dispatch(login());
       dispatch(closeLoginModal());
-      if(!authenticatedPages.includes(pathname)){
+      if (!authenticatedPages.includes(pathname)) {
         router.push("/for-you");
       }
-
     } catch (error) {
       alert("Sign-in failed: " + (error as Error).message);
-    } finally{
+    } finally {
       setLoading(false);
     }
   }
@@ -56,7 +56,7 @@ export default function LoginModal() {
       const user = result.user;
       dispatch(login());
       dispatch(closeLoginModal());
-      if(!authenticatedPages.includes(pathname)){
+      if (!authenticatedPages.includes(pathname)) {
         router.push("/for-you");
       }
     } catch (error) {
@@ -72,12 +72,12 @@ export default function LoginModal() {
       await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
       dispatch(login());
       dispatch(closeLoginModal());
-      if(!authenticatedPages.includes(pathname)){
+      if (!authenticatedPages.includes(pathname)) {
         router.push("/for-you");
       }
     } catch (error) {
       alert("Guest sign-in failed: " + (error as Error).message);
-    } finally{
+    } finally {
       setLoadingGuest(false);
     }
   }
@@ -113,7 +113,9 @@ export default function LoginModal() {
               <figure className="modal__icon modal__icon--google">
                 <FcGoogle />
               </figure>
-              <div>{loadingGoogle ? "Signing In..." : "Log in with Google"}</div>
+              <div>
+                {loadingGoogle ? "Signing In..." : "Log in with Google"}
+              </div>
             </button>
             <div className="auth__seperator">
               <span className="auth__separator--text">or</span>
@@ -132,21 +134,27 @@ export default function LoginModal() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button onClick={handleSignIn} className="btn" disabled={loading}>
-              {loading ? "Signing In..." : "Sign In"}
+                {loading ? "Signing In..." : "Sign In"}
               </button>
             </div>
           </div>
-          <div className="auth__forgot--password">Forgot your password?</div>
+          <div
+            className="auth__forgot--password"
+            onClick={() => {dispatch(openPasswordModal()), dispatch(closeLoginModal())}}
+          >
+            Forgot your password?
+          </div>
           <button
             className="auth__switch--btn"
-            onClick={() => 
-              dispatch(openSignupModal())
-            }
+            onClick={() => dispatch(openSignupModal())}
           >
             Don't have an account?
           </button>
-          <div className="auth__close--btn" onClick={() => dispatch(closeLoginModal())}>
-          <RxCross1 />
+          <div
+            className="auth__close--btn"
+            onClick={() => dispatch(closeLoginModal())}
+          >
+            <RxCross1 />
           </div>
         </div>
       </Modal>
