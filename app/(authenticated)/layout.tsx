@@ -1,6 +1,6 @@
-import Sidebar from "@/app/components/Sidebar";
+import Sidebar from "@/app/components/auth/Sidebar";
 import React from "react";
-import Searchbar from "../components/Searchbar";
+import Searchbar from "../components/auth/Searchbar";
 import LoginModal from "../components/modals/LoginModal";
 
 interface LayoutProps {
