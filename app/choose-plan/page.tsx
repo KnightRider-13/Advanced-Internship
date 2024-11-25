@@ -4,36 +4,93 @@ import { IoDocumentText } from "react-icons/io5";
 import Footer from "../components/home/Footer";
 import { RiPlantFill } from "react-icons/ri";
 import { FaHandshake } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { closeLoginModal, openLoginModal } from "@/redux/modalSlice";
+import { getCheckoutUrl } from "../StripePayment";
+import { accordionData } from "@/public/data/accordionData";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { app } from "@/firebase";
+import { login, setPremiumStatus } from "@/redux/authSlice";
+import { updatePremiumStatus } from "../UpdatePremiumStatus";
+
 
 export default function ChoosePlan() {
+  const [selectedPlan, setSelectedPlan] = useState<'yearly' | 'monthly'>('yearly');
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
-  const accordionData = [
-    {
-      id: 1,
-      title: "How does the free 7-day trial work?",
-      body: "Begin your complimentary 7-day trial with a Summarist annual membership. You are under no obligation to continue your subscription, and you will only be billed when the trial period expires. With Premium access, you can learn at your own pace and as frequently as you desire, and you may terminate your subscription prior to the conclusion of the 7-day free trial.",
-    },
-    {
-      id: 2,
-      title: "Can I switch subscriptions from monthly to yearly, or yearly to monthly?",
-      body: "While an annual plan is active, it is not feasible to switch to a monthly plan. However, once the current month ends, transitioning from a monthly plan to an annual plan is an option.",
-    },
-    {
-      id: 3,
-      title: "What's included in the Premium plan?",
-      body: "Premium membership provides you with the ultimate Summarist experience, including unrestricted entry to many best-selling books high-quality audio, the ability to download titles for offline reading, and the option to send your reads to your Kindle.",
-    },
-    {
-      id: 4,
-      title: "Can I cancel during my trial or subscription?",
-      body: "You will not be charged if you cancel your trial before its conclusion. While you will not have complete access to the entire Summarist library, you can still expand your knowledge with one curated book per day.",
-    },
-  ];
+  const router = useRouter(); 
+  const [user, setUser] = useState<User | null>(null);
+  const dispatch = useDispatch();
+  const auth = getAuth();
+  const isAutghenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const subscriptionStatus = useSelector((state: RootState) => state.auth.premiumStatus);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        dispatch(login());
+        dispatch(closeLoginModal());
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth, dispatch]);
+
+  const upgradeToPremiumMonthly = async () => {
+    const priceId = "price_1QOhqsLvRL6qQUR0CZal7eQ0";
+    const checkoutURL = await getCheckoutUrl(app, priceId);
+    router.push(checkoutURL);
+    if (user) {
+      await updatePremiumStatus(user.uid, 'Premium');
+      dispatch(setPremiumStatus('Premium'));
+    }
+  }
+
+  const upgradeToPremiumYearly = async () => {
+    const priceId = "price_1QOhraLvRL6qQUR0AosEoxZQ";
+    const trialPeriodDays = 7; 
+  const checkoutURL = await getCheckoutUrl(app, priceId, trialPeriodDays);
+    router.push(checkoutURL);
+    if (user) {
+      await updatePremiumStatus(user.uid, 'Premium-Plus');
+      dispatch(setPremiumStatus('Premium-Plus'))
+    }
+  }
+
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      if (isAutghenticated && subscriptionStatus != "") {
+        router.push("/for-you");
+      } else {
+        setUser(null);
+      }
+    };
+
+    checkUserStatus();
+  }, [router]);
 
   const handleAccordionClick = (id: number) => {
     setActiveAccordion(activeAccordion === id ? null : id);
   }
+  const handlePlanSelect = (plan: 'yearly' | 'monthly') => {
+    setSelectedPlan(plan);
+  };
+  const handleButtonClick = () => {
+    if (!user) {
+      dispatch(openLoginModal());
+    } else {
+      if (selectedPlan === 'monthly') {
+        upgradeToPremiumMonthly(); 
+      } else if(selectedPlan === "yearly"){
+        upgradeToPremiumYearly();
+      }
+    }
+  };
 
   return (
     <div className="wrapper wrapper__full">
@@ -80,9 +137,10 @@ export default function ChoosePlan() {
               </div>
             </div>
             <div className="section__title">Choose the plan that fits you</div>
-            <div className="plan__card plan__card--active">
+            <div className={`plan__card ${selectedPlan === 'yearly' ? 'plan__card--active' : ''}`}
+             onClick={() => handlePlanSelect('yearly')}>
               <div className="plan__card--circle">
-                <div className="plan__card--dot"></div>
+              {selectedPlan === "yearly" ? <div className="plan__card--dot"></div> : <></>}
               </div>
               <div className="plan__card--content">
                 <div className="plan__card--title">Premium Plus Yearly</div>
@@ -95,8 +153,11 @@ export default function ChoosePlan() {
             <div className="plan__card--separator">
               <div className="plan__separator">or</div>
             </div>
-            <div className="plan__card ">
-              <div className="plan__card--circle"></div>
+            <div className={`plan__card ${selectedPlan === 'monthly' ? 'plan__card--active' : ''}`}
+              onClick={() => handlePlanSelect('monthly')}>
+              <div className="plan__card--circle">
+              {selectedPlan === "monthly" ? <div className="plan__card--dot"></div> : <></>}
+              </div>
               <div className="plan__card--content">
                 <div className="plan__card--title">Premium Monthly</div>
                 <div className="plan__card--price">$9.99/month</div>
@@ -105,13 +166,16 @@ export default function ChoosePlan() {
             </div>
             <div className="plan__card--cta">
               <span className="btn--wrapper">
-                <button className="btn plan__button">
-                  <span>Start your free 7-day trial</span>
+                <button className="btn plan__button" onClick={handleButtonClick}>
+                  <span>{selectedPlan === 'yearly'
+                      ? 'Start your free 7-day trial'
+                      : 'Start your first month'}</span>
                 </button>
               </span>
               <div className="plan__disclaimer">
-                Cancel your trial at any time before it ends, and you won’t be
-                charged.
+              {selectedPlan === 'yearly'
+                      ? 'Cancel your trial at any time before it ends, and you won’t be charged.'
+                      : '30-day money back guarantee, no questions asked.'}
               </div>
             </div>
             <div className="faq__wrapper">

@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { initializeApp, getApps } from "firebase/app";
+import { browserLocalPersistence, getAuth, setPersistence } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth/web-extension";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -18,8 +18,15 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 export const db = getFirestore(app);
-export const auth = getAuth(app);
 export const storage = getStorage();
 export const provider = new GoogleAuthProvider();
+
+export const auth = getAuth(app);
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+  })
+  .catch((error) => {
+    console.error("Error setting persistence:", error);
+  });

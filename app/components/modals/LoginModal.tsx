@@ -18,6 +18,7 @@ import { login } from "@/redux/authSlice";
 
 export default function LoginModal() {
   const isOpen = useSelector((state: RootState) => state.modal.loginModalOpen);
+  const pendingAction = useSelector((state: RootState) => state.modal.pendingAction);
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -39,7 +40,7 @@ export default function LoginModal() {
       await signInWithEmailAndPassword(auth, email, password);
       dispatch(login());
       dispatch(closeLoginModal());
-      if (!authenticatedPages.includes(pathname)) {
+      if (pathname === "/" && !authenticatedPages.includes(pathname)) {
         router.push("/for-you");
       }
     } catch (error) {
@@ -56,7 +57,7 @@ export default function LoginModal() {
       const user = result.user;
       dispatch(login());
       dispatch(closeLoginModal());
-      if (!authenticatedPages.includes(pathname)) {
+      if (pathname === "/" && !authenticatedPages.includes(pathname)) {
         router.push("/for-you");
       }
     } catch (error) {
@@ -72,7 +73,7 @@ export default function LoginModal() {
       await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
       dispatch(login());
       dispatch(closeLoginModal());
-      if (!authenticatedPages.includes(pathname)) {
+      if (pathname === "/" && !authenticatedPages.includes(pathname)) {
         router.push("/for-you");
       }
     } catch (error) {

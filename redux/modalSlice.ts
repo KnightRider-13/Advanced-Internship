@@ -9,7 +9,7 @@ interface ModalState {
 const initialState: ModalState = {
     signUpModalOpen: false,
     loginModalOpen: false,
-    passwordModalOpen: false
+    passwordModalOpen: false,
 }
 
 const modalSlice = createSlice({

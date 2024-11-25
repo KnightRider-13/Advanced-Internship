@@ -1,11 +1,13 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { Action, createSlice } from "@reduxjs/toolkit";
 
 interface ModalState{
-    isAuthenticated: boolean
+    isAuthenticated: boolean;
+    premiumStatus: string;
 }
 
 const initialState: ModalState = {
-    isAuthenticated: false
+    isAuthenticated: false,
+    premiumStatus: "",
 }
 
 const authSlice = createSlice({
@@ -17,9 +19,13 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.isAuthenticated = false;
+            state.premiumStatus = ""
+        },
+        setPremiumStatus: (state, action) => {
+            state.premiumStatus = action.payload;
         }
     }
 })
 
-export const {login, logout} = authSlice.actions;
+export const {login, logout, setPremiumStatus} = authSlice.actions;
 export default authSlice.reducer;
