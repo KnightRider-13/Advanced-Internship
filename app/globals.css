@@ -135,7 +135,9 @@ button:disabled {
 .landing__wrapper {
   display: flex;
 }
-
+.landing__row{
+  width: 1060px;
+}
 .landing__content {
   width: 100%;
 }
@@ -633,7 +635,10 @@ button:disabled {
   padding-bottom: 20px;
   overflow-y: auto;
 }
-.sidebar__top, .sidebar__bottom {
+.sidebar__wrapper--player-active{
+  height: calc(-140px + 100vh);
+}
+.sidebar__top{
   flex: 1 1;
   margin-top: 40px;
 }
@@ -644,6 +649,25 @@ button:disabled {
   color: #032b41;
   margin-bottom: 8px;
   cursor: pointer;
+}
+.sidebar__font--size-wrapper {
+  display: flex;
+  margin-left: 24px;
+  gap: 8px;
+}
+.sidebar__link--wrapper:last-child {
+  margin-bottom: 0;
+}
+.sidebar__font--size-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+}
+.sidebar__font--size-icon--active {
+  border-bottom: 3px solid #2bd97c;
 }
 .sidebar__link--line {
   width: 5px;
@@ -730,6 +754,61 @@ button:disabled {
   justify-content: flex-end;
   border-left: 2px solid #e1e7ea;
   padding-left: 8px;
+}
+.search__books--wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 440px;
+  width: 100%;
+  max-height: 640px;
+  margin-left: auto;
+  overflow-y: auto;
+  padding: 16px;
+  position: absolute;
+  top: 104px;
+  right: 24px;
+  background-color: #fff;
+  border: 1px solid #e1e7ea;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, .14);
+}
+.search__bookImg--wrapper{
+  height: 80px;
+  width: 80px;
+  min-width: 80px;
+}
+.search__book--link {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 24px;
+  height: 120px;
+  border-bottom: 1px solid #e1e7ea;
+}
+.search__book--title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #032b41;
+  margin-bottom: 8px;
+}
+.search__book--author {
+  font-size: 14px;
+  font-weight: 300;
+  color: #6b757b;
+  margin-bottom: 8px;
+}
+
+.recommended__book--details {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 300;
+  color: #6b757b;
+}
+.recommended__book--details-icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
 }
 
 /* FOR-YOU PAGE */
@@ -834,6 +913,7 @@ button:disabled {
   scroll-snap-type: x;
   margin-bottom: 32px;
 }
+
 
 /* BOOKS */
 
@@ -1000,6 +1080,11 @@ button:disabled {
   font-size: 18px;
   transition: color .2s;
 }
+.btn--finished{
+  max-width: 120px;
+  margin-left: 12px;
+  border-radius: 20px;
+}
 .inner-book__bookmark--icon {
   display: flex;
   width: 20px;
@@ -1085,6 +1170,10 @@ button:disabled {
 .setting__content:last-child {
   margin-bottom: 0;
   border-bottom: none;
+}
+.btn__premium{
+  width: 100%;
+  max-width: 80px;
 }
 
 /* LOGOUT PAGE */
@@ -1236,6 +1325,14 @@ button:disabled {
   height: 6px;
   background-color: #000;
   border-radius: 50%;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.plan__card--active .plan__card--dot {
+  opacity: 1;
+}
+
+.plan__card--dot {
+  opacity: 0;
 }
 .plan__card--title {
   font-size: 18px;
@@ -1317,6 +1414,344 @@ button:disabled {
 }
 .accordion__body{
   margin-bottom: 16px;
+}
+
+/* PLAYER PAGE */
+
+.summary {
+  position: relative;
+  width: 100%;
+  overflow-y: auto;
+  height: calc(100vh - 160px);
+}
+.audio__book--summary {
+  white-space: pre-line;
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.player__text{
+  font-size: 16px;
+}
+.audio__book--summary-title {
+  color: #032b41;
+  font-size: 24px;
+  border-bottom: 1px solid #e1e7ea;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  line-height: 1.5;
+}
+.audio__book--summary-text {
+  white-space: pre-line;
+  line-height: 1.4;
+  color: #032b41;
+}
+.audio__wrapper {
+  width: 100%;
+  height: 80px;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #042330;
+  padding: 0 40px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 9998;
+}
+.audio__track--wrapper {
+  display: flex;
+  gap: 12px;
+}
+.audio__wrapper>div {
+  width: calc(100% / 3);
+}
+
+.audio__track--image-mask {
+  display: flex;
+  max-width: 48px;
+}
+.player__book--img-wrapper {
+  height: 48px;
+  width: 48px;
+  min-width: 48px;
+}
+.book__image {
+  width: 100%;
+  height: 100%;
+}
+.audio__track--details-wrapper {
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+.audio__track--author {
+  color: #bac8ce;
+}
+.audio__controls{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+.audio__controls--btn {
+  border-radius: 50%;
+  cursor: pointer;
+}
+.audio_btn-control {
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  transition: all .2s;
+  font-size: 32px;
+  margin-top: 8px;
+}
+.audio__controls--btn-play {
+  background-color: #fff;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+.audio__progress--wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.audio__time {
+  color: #fff;
+  font-size: 14px;
+}
+.audio__progress--bar {
+  border-radius: 8px;
+  height: 4px;
+  max-width: 300px;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+  background: rgb(109, 120, 125);
+  position: relative;
+}
+.audio__progress--bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.1s ease;
+}
+.audio__time {
+  color: #fff;
+  font-size: 14px;
+}
+
+/* SKELETON LOADING STATE */
+
+/* For-You, Library, Books */
+.skeleton {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite;
+}
+
+.book__skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 172px;
+}
+
+.skeleton__image {
+  width: 172px;
+  height: 172px;
+}
+
+.skeleton__title {
+  width: 80%;
+  height: 16px;
+}
+
+.skeleton__author {
+  width: 60%;
+  height: 14px;
+}
+
+.skeleton__sub-title {
+  width: 70%;
+  height: 14px;
+}
+
+.skeleton__details-wrapper {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.skeleton__details {
+  width: 40%;
+  height: 14px;
+}
+.skeleton__selected{
+  width: 60%;
+  margin-bottom: 24px;
+  height: 180px;
+}
+
+/* SearchBar */
+.skeleton__wrapper{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 440px;
+  height: 120px;
+  border-bottom: 1px solid #e1e7ea;
+  padding: 24px;
+}
+.skeleton__bookImg {
+  height: 80px;
+  width: 80px;
+  min-width: 80px;
+}
+.skeleton__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: start;
+  width: 100%;
+  margin-left: 16px;
+}
+.skeleton__title, .skeleton__author, .skeleton__duration {
+  height: 20px;
+}
+
+.skeleton__title {
+  width: 40%;
+}
+
+.skeleton__author {
+  width: 50%;
+}
+.skeleton__duration{
+  width: 20%;
+}
+
+/* Book Page */
+
+.skeleton__book--title {
+  width: 65%;
+  height: 30px;
+}
+
+.skeleton__book--author {
+  width: 25%;
+  height: 20px;
+}
+
+.skeleton__book--sub-title {
+  width: 75%;
+  height: 20px;
+}
+
+.skeleton__book--type {
+  width: 120px;
+  height: 20px;
+}
+
+.skeleton-key-ideas {
+  width: 100px;
+  height: 20px;
+}
+
+.skeleton-secondary-title {
+  margin-top: 16px;
+  width: 120px;
+  height: 25px;
+}
+
+.skeleton-tag {
+  width: 80px;
+  height: 20px;
+}
+
+.skeleton-description {
+  width: 80%;
+  height: 150px;
+}
+
+.skeleton-image {
+  width: 200px;
+  height: 300px;
+}
+.skeleton__description--wrapper{
+  width: 350px;
+  height: 60px;
+}
+
+/* Player/Reading Page */
+
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  background-color: #f9f9f9; 
+}
+
+.loading-circle {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top: 5px solid #032b41; 
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.skeleton__player--img{
+  width: 100%;
+  height: 100%;
+}
+.skeleton__player--title{
+  width: 220px;
+  height: 20px;
+  margin-bottom: 6px;
+}
+.skeleton__player--author{
+  width: 75px;
+  height: 16px;
+}
+
+/* Settings Page */
+
+.skeleton__text{
+  width: 180px;
+  height: 24px;
+  margin-top: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 768px) {

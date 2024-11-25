@@ -5,7 +5,7 @@ import { openLoginModal } from "@/redux/modalSlice";
 import { RootState } from "@/redux/store";
 import { signOutUser } from "@/redux/userSlice";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname} from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsPen } from "react-icons/bs";
 import { CiBookmark, CiSearch, CiSettings } from "react-icons/ci";
@@ -20,6 +20,8 @@ export default function Sidebar() {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
+  const isPlayerPage = pathname.includes('/player');
+
 
   const handleLinkClick = (link: string): void => {
     setActiveLink(link);
@@ -32,8 +34,6 @@ export default function Sidebar() {
       setActiveLink("library");
     } else if (pathname.includes("/settings")) {
       setActiveLink("settings");
-    } else if (pathname.includes("/logout")) {
-      setActiveLink("logout");
     }
   }, [pathname]);
 
@@ -43,7 +43,7 @@ export default function Sidebar() {
         <div className="sidebar__logo">
           <img src="/assets/logo.png" />
         </div>
-        <div className="sidebar__wapper">
+        <div className={`sidebar__wrapper ${isPlayerPage ? "sidebar__wrapper--player-active" : ""}`}>
           <div className="sidebar__top">
             <Link
               className="sidebar__link--wrapper"
@@ -88,6 +88,9 @@ export default function Sidebar() {
                 <CiSearch className="sidebar__icon" />
               </div>
               <div className="sidebar__link--text">Search</div>
+              <div className="sidebar__link--wrapper sidebar__font--size-wrapper">
+                <div className="sidebar__link--text sidebar__font--size-icon siebar__font--size-icon--active"></div>
+              </div>
             </div>
           </div>
           <div className="sidebar__bottom">
@@ -114,29 +117,24 @@ export default function Sidebar() {
               <div className="sidebar__link--text">Help & Support</div>
             </div>
             {isAuthenticated ? (
-              <Link
+              <button
                 className="sidebar__link--wrapper"
-                href={"/logout"}
                 onClick={() => {
-                  handleLinkClick("logout");
                   dispatch(signOutUser());
                   dispatch(logout());
                 }}
               >
                 <div
-                  className={`sidebar__link--line ${
-                    activeLink === "logout" ? "active--tab" : ""
-                  }`}
+                  className="sidebar__link--line"
                 ></div>
                 <div className="sidebar__icon--wrapper">
                   <FiLogOut className="sidebar__icon" />
                 </div>
                 <div className="sidebar__link--text">Logout</div>
-              </Link>
+              </button>
             ) : (
-              <Link
+              <button
                 className="sidebar__link--wrapper"
-                href={"/logout"}
                 onClick={() => dispatch(openLoginModal())}
               >
                 <div
@@ -148,7 +146,7 @@ export default function Sidebar() {
                   <FiLogOut className="sidebar__icon" />
                 </div>
                 <div className="sidebar__link--text">Login</div>
-              </Link>
+              </button>
             )}
           </div>
         </div>

@@ -10,7 +10,7 @@ export default function Landing(){
     return(
         <section id="landing">
       <div className="container">
-        <div className="row">
+        <div className="row landing__row">
           <div className="landing__wrapper">
             <div className="landing__content">
               <div className="landing__content__title">
