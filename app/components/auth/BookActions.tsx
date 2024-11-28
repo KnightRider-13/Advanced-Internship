@@ -62,7 +62,7 @@ const BookActions: React.FC<BookActionsProps> = ({ data }) => {
           (book: any) => book.bookId === data.id
         );
         if (favoriteBook) {
-          setBookStatus(favoriteBook.status || "saved"); // Default to 'saved' if no status
+          setBookStatus(favoriteBook.status || "saved"); 
         }
       }
     } catch (error) {

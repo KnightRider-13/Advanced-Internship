@@ -18,7 +18,6 @@ import { login } from "@/redux/authSlice";
 
 export default function LoginModal() {
   const isOpen = useSelector((state: RootState) => state.modal.loginModalOpen);
-  const pendingAction = useSelector((state: RootState) => state.modal.pendingAction);
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -29,12 +28,18 @@ export default function LoginModal() {
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loading, setLoading] = useState(false);
   const authenticatedPages = ["/for-you", "/library", "/settings"];
+  const [error, setError] = useState("");
 
   async function handleSignIn() {
-    if (!email || !password) {
-      alert("Please enter both email and password");
+    if (!email) {
+      setError("Email is required.");
       return;
     }
+    if (!password) {
+      setError("Password is required.");
+      return;
+    }
+    setError("");
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -44,13 +49,21 @@ export default function LoginModal() {
         router.push("/for-you");
       }
     } catch (error) {
-      alert("Sign-in failed: " + (error as Error).message);
+      const errorMessage = (error as Error).message;
+      if (errorMessage.includes("invalid-email")) {
+        setError("Invalid email address.");
+      } else if (errorMessage.includes("wrong-password")) {
+        setError("Incorrect password.");
+      } else {
+        setError("Sign-in failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   }
 
   async function handleGoogleSignIn() {
+    setError("");
     setLoadingGoogle(true);
     try {
       const result = await signInWithPopup(auth, provider);
@@ -61,13 +74,19 @@ export default function LoginModal() {
         router.push("/for-you");
       }
     } catch (error) {
-      alert("Google sign-in failed: " + (error as Error).message);
+      const errorMessage = (error as Error).message;
+      setError(
+        errorMessage.includes("popup-closed-by-user")
+          ? "Google sign-in was canceled."
+          : "Google sign-in failed. Please try again."
+      );
     } finally {
       setLoadingGoogle(false);
     }
   }
 
   async function handleGuestSignIn() {
+    setError("");
     setLoadingGuest(true);
     try {
       await signInWithEmailAndPassword(auth, "guest@gmail.com", "guest123");
@@ -77,7 +96,12 @@ export default function LoginModal() {
         router.push("/for-you");
       }
     } catch (error) {
-      alert("Guest sign-in failed: " + (error as Error).message);
+      const errorMessage = (error as Error).message;
+      setError(
+        errorMessage.includes("user-not-found")
+          ? "Guest account does not exist."
+          : "Guest sign-in failed. Please try again."
+      );
     } finally {
       setLoadingGuest(false);
     }
@@ -122,6 +146,7 @@ export default function LoginModal() {
               <span className="auth__separator--text">or</span>
             </div>
             <div className="auth__main--form">
+            {error && <div className="error-message">{error}</div>}
               <input
                 className="auth__main--input"
                 type={"email"}

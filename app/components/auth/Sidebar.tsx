@@ -5,23 +5,30 @@ import { openLoginModal } from "@/redux/modalSlice";
 import { RootState } from "@/redux/store";
 import { signOutUser } from "@/redux/userSlice";
 import Link from "next/link";
-import { usePathname} from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsPen } from "react-icons/bs";
 import { CiBookmark, CiSearch, CiSettings } from "react-icons/ci";
 import { FiHelpCircle, FiLogOut } from "react-icons/fi";
+import { IoTextOutline } from "react-icons/io5";
 import { PiHouseLine } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+}
+
+export default function Sidebar({ isOpen }: SidebarProps) {
   const dispatch = useDispatch();
   const pathname = usePathname();
   const [activeLink, setActiveLink] = useState<string>("for-you");
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-  const isPlayerPage = pathname.includes('/player');
-
+  const isPlayerPage = pathname.includes("/player");
+  const [fontSize, setFontSize] = useState<number>(16);
+  const fontSizes = [16, 18, 22, 26];
+  const activeFontIndex = fontSizes.indexOf(fontSize);
 
   const handleLinkClick = (link: string): void => {
     setActiveLink(link);
@@ -37,13 +44,29 @@ export default function Sidebar() {
     }
   }, [pathname]);
 
+  const handleFontSizeChange = (size: number): void => {
+    setFontSize(size);
+    const summaryElement = document.querySelector(".audio__book--summary");
+    if (summaryElement) {
+      (summaryElement as HTMLElement).style.fontSize = `${size}px`;
+    }
+  };
+
   return (
     <>
-      <div className="sidebar sidebar--closed">
+      <div
+        className={`sidebar ${
+          isOpen ? "sidebar--opened" : "sidebar--closed"
+        }`}
+      >
         <div className="sidebar__logo">
           <img src="/assets/logo.png" />
         </div>
-        <div className={`sidebar__wrapper ${isPlayerPage ? "sidebar__wrapper--player-active" : ""}`}>
+        <div
+          className={`sidebar__wrapper ${
+            isPlayerPage ? "sidebar__wrapper--player-active" : ""
+          }`}
+        >
           <div className="sidebar__top">
             <Link
               className="sidebar__link--wrapper"
@@ -61,7 +84,7 @@ export default function Sidebar() {
               <div className="sidebar__link--text">For you</div>
             </Link>
             <Link
-              className="sidebar__link--wrapper"
+              className="sidebar__link--wrapper sidebar__link--not-allowed"
               href={"/library"}
               onClick={() => handleLinkClick("library")}
             >
@@ -92,6 +115,24 @@ export default function Sidebar() {
                 <div className="sidebar__link--text sidebar__font--size-icon siebar__font--size-icon--active"></div>
               </div>
             </div>
+            {isPlayerPage && (
+          <div className="sidebar__link--wrapper sidebar__font--size-wrapper">
+            {fontSizes.map((size, index) => (
+              <div
+                key={size}
+                className={`sidebar__link--text sidebar__font--size-icon ${
+                  activeFontIndex === index
+                    ? "sidebar__font--size-icon--active"
+                    : ""
+                }`}
+                style={{ fontSize: `${size}px` }}
+                onClick={() => handleFontSizeChange(size)}
+              >
+                <IoTextOutline />
+              </div>
+            ))}
+          </div>
+        )}
           </div>
           <div className="sidebar__bottom">
             <Link
@@ -124,9 +165,7 @@ export default function Sidebar() {
                   dispatch(logout());
                 }}
               >
-                <div
-                  className="sidebar__link--line"
-                ></div>
+                <div className="sidebar__link--line"></div>
                 <div className="sidebar__icon--wrapper">
                   <FiLogOut className="sidebar__icon" />
                 </div>

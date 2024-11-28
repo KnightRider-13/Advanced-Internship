@@ -46,7 +46,7 @@ export default async function Player({ params }: { params: { id: string } }) {
             {isLoading ? <div className="skeleton skeleton__player--author"></div> :  <div className="audio__track--author">{bookData.author}</div>}
           </div>
         </div>
-        <AudioPlayer audioUrl={bookData.audioLink} />
+        <AudioPlayer audioUrl={bookData.audioLink} bookId={bookData.id}/>
       </div>
     </>
   );
