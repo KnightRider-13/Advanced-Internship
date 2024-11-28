@@ -83,7 +83,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
               </div>
               <div className="sidebar__link--text">For you</div>
             </Link>
-            <Link
+            {/* <Link
               className="sidebar__link--wrapper sidebar__link--not-allowed"
               href={"/library"}
               onClick={() => handleLinkClick("library")}
@@ -97,7 +97,14 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 <CiBookmark className="sidebar__icon" />
               </div>
               <div className="sidebar__link--text">My Library</div>
-            </Link>
+            </Link> */}
+            <div className="sidebar__link--wrapper sidebar__link--not-allowed">
+              <div className="sidebar__link--line "></div>
+              <div className="sidebar__icon--wrapper">
+                <CiBookmark className="sidebar__icon" />
+              </div>
+              <div className="sidebar__link--text">My Library</div>
+            </div>
             <div className="sidebar__link--wrapper sidebar__link--not-allowed">
               <div className="sidebar__link--line "></div>
               <div className="sidebar__icon--wrapper">
