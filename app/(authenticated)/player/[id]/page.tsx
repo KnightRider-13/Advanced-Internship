@@ -9,7 +9,7 @@ const fetchBookData = async (bookId: string) => {
   return data;
 };
 
-export default async function Player({ params }: { params: { id: string } }) {
+export default async function Player({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const bookData = await fetchBookData(id);
   const isLoading = !bookData;
