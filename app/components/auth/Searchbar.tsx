@@ -10,7 +10,6 @@ import { FaTimes } from "react-icons/fa";
 import { BookType } from "@/types/book";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useDispatch } from "react-redux";
-import { toggleSidebar } from "@/redux/sidebarSlice";
 
 interface SearchbarProps {
   onMenuClick: () => void;
