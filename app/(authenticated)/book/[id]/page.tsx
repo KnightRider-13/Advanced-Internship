@@ -8,6 +8,7 @@ import { CiMicrophoneOn, CiStar } from "react-icons/ci";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { TfiTime } from "react-icons/tfi";
 
+
 async function fetchBookData(id: string): Promise<BookType | null> {
   const bookURL = `https://us-central1-summaristt.cloudfunctions.net/getBook?id=${id}`;
   try {
@@ -19,7 +20,7 @@ async function fetchBookData(id: string): Promise<BookType | null> {
   }
 }
 
-export default async function BookPage({ params }: { params: { id: string } }) {
+export default async function BookPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await new Promise<any>((resolve) => {
     onAuthStateChanged(auth, (user) => {
       resolve(user);
