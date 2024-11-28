@@ -21,6 +21,9 @@ export default function Numbers(){
             <div className="numbers">
               <div className="numbers__icon numbers__star--icon">
                 <BsStarFill />
+                <BsStarFill />
+                <BsStarFill />
+                <BsStarFill />
                 <BsStarHalf />
               </div>
               <div className="numbers__title">4.5 Stars</div>

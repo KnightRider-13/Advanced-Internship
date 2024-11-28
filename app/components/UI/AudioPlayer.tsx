@@ -1,15 +1,18 @@
 "use client";
 
+import { getAuth } from "firebase/auth";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { useEffect, useRef, useState } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { RiForward10Line, RiReplay10Line } from "react-icons/ri";
 
 interface AudioPlayerProps {
   audioUrl: string | undefined | null;
+  bookId: string;
   onComplete?: () => void;
 }
 
-const AudioPlayer = ({ audioUrl, onComplete }: AudioPlayerProps) => {
+const AudioPlayer = ({ audioUrl, bookId, onComplete }: AudioPlayerProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const progressRef = useRef<HTMLInputElement | null>(null);
@@ -44,6 +47,37 @@ const AudioPlayer = ({ audioUrl, onComplete }: AudioPlayerProps) => {
     }
   };
 
+  const markAsFinished = async () => {
+    try {
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      if (!user) {
+        throw new Error("User is not signed in.");
+      }
+
+      const db = getFirestore();
+    const userRef = doc(db, "users", user.uid);
+    const userDoc = await getDoc(userRef);
+
+    if (!userDoc.exists()) {
+      throw new Error("User document does not exist.");
+    }
+    const data = userDoc.data();
+    const favorites = data.favorites || [];
+    
+    const bookIndex = favorites.findIndex((book: any) => book.bookId === bookId);
+    if (bookIndex === -1) {
+      throw new Error("Book not found in favorites.");
+    }
+    favorites[bookIndex].status = "finished";
+    await updateDoc(userRef, { favorites });
+
+    } catch (error) {
+      console.error("Error updating book status:", error);
+    }
+  };
+
   useEffect(() => {
     const audio = audioRef.current;
     const handleLoadedMetadata = () => {
@@ -62,6 +96,7 @@ const AudioPlayer = ({ audioUrl, onComplete }: AudioPlayerProps) => {
       if (onComplete) {
         onComplete();
       }
+      markAsFinished();
     };
 
     if (audio) {

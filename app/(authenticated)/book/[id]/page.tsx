@@ -31,7 +31,7 @@ export default async function BookPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="container">
-      <div className="row">
+      <div className="row auth__row">
         <div className="inner__wrapper">
           <div className="inner__book">
             <div className="inner-book__title">
@@ -143,8 +143,8 @@ export default async function BookPage({ params }: { params: { id: string } }) {
               )}
             </div>
           </div>
-          <div className="inner__book--image-wrapper">
-            <figure className="inner__book__image--wrapper">
+          <div className="inner-book--img-wrapper">
+            <figure className="book--image-wrapper">
               {isLoading ? (
                 <div className="skeleton skeleton-image"></div>
               ) : (

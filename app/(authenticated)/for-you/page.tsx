@@ -30,7 +30,7 @@ export default async function ForYou() {
 
   return (
     <div className="container">
-      <div className="row">
+      <div className="row auth__row">
         <div className="for-you__wrapper">
           <div className="for-you__title">Selected just for you</div>
           {!data ? (

@@ -8,7 +8,13 @@ import Duration from "../UI/Duration";
 import { TfiTime } from "react-icons/tfi";
 import { FaTimes } from "react-icons/fa";
 import { BookType } from "@/types/book";
-import BookSkeleton from "../UI/BookSkeleton";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "@/redux/sidebarSlice";
+
+interface SearchbarProps {
+  onMenuClick: () => void;
+}
 
 async function fetchBookData(search: string): Promise<BookType[]> {
   const searchURL = `https://us-central1-summaristt.cloudfunctions.net/getBooksByAuthorOrTitle?search=${search}`;
@@ -22,11 +28,12 @@ async function fetchBookData(search: string): Promise<BookType[]> {
   }
 }
 
-export default function Searchbar() {
+export default function Searchbar({ onMenuClick }: SearchbarProps) {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [books, setBooks] = useState<BookType[]>([]);
   const [showResults, setShowResults] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (searchKeyword.trim() === "") {
@@ -87,6 +94,9 @@ export default function Searchbar() {
                 {showResults ? <FaTimes /> : <CiSearch />}
               </div>
             </div>
+          </div>
+          <div className="sidebar__toggle--btn" onClick={onMenuClick}>
+          <RxHamburgerMenu />
           </div>
         </div>
         {showResults && (
